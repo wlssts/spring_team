@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qna">
+
+	<select id="list" resultType="QnaDTO" parameterType="Map">
+		SELECT qnano, name, passwd, title, content, grpno, indent, wdate
+		FROM qna
+		<where>
+			<if test="col == 'title'">
+				title like '%'||#{word}||'%'
+			</if>
+			<if test="col == 'content'">
+				content like '%'||#{word}||'%'
+			</if>
+		</where>
+		order by grpno asc, indent asc limit #{sno},#{eno}
+	</select>
+
+	<select id="total" resultType="int" parameterType="Map">
+		select count(*) from qna
+		<where>
+			<choose>
+				<when test="col=='title'">
+					title like '%'||#{word}||'%'
+				</when>
+				<when test="col=='content'">
+					content like '%'||#{word}||'%'
+				</when>
+			</choose>
+		</where>
+	</select>
+
+	<select id="read" resultType="QnaDTO" parameterType="int">
+		select
+		qnano, name, title, content, fnamemain, wdate
+		from qna where
+		qnano = #{qnano}		
+	</select>
+
+	<select id="passwdCheck" parameterType="Map" resultType="int">
+		SELECT
+		COUNT(*) AS cnt
+		FROM
+		qna
+		WHERE
+		qnano=#{qnano} AND passwd=#{passwd}
+	</select>
+
+	<update id="update" parameterType="QnaDTO">
+		UPDATE qna SET
+		title = #{title},
+		content = #{content},
+		fnamemain = #{fnamemain}
+		WHERE qnano = #{qnano};
+	</update>
+	
+	<insert id="create" parameterType="QnaDTO">
+		INSERT INTO qna (name,passwd,title,content,fnamemain,wdate,grpno)
+		VALUES
+		(#{name},#{passwd},#{title},#{content},#{fnamemain},sysdate(),(SELECT * FROM (SELECT ifnull(MAX(GRPNO), 0) + 1 FROM qna) q));
+	</insert>
+	
+	<select id="getIndent" parameterType="int" resultType="int">
+		select COUNT(*) from qna where qnano = #{qnano} and indent = 1
+	</select>
+	
+	<insert id="replyCreate" parameterType="QnaDTO">
+		INSERT INTO qna
+		(name, passwd, title, content, wdate, fnamemain, grpno, indent)
+		VALUES(#{name}, #{passwd}, #{title},#{content},sysdate(),
+		#{fnamemain},#{qnano},#{indent}+1)
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		delete from qna where qnano = #{qnano}
+	</delete>
+</mapper>

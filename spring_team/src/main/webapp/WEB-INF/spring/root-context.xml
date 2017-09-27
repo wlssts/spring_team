@@ -21,10 +21,17 @@
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 	</bean>
 	
+<!-- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property> -->
+<!-- 		<property name="url" value="jdbc:mysql://127.0.0.1:3306/daobs"></property> Mysql 관련 주소 -->
+<!-- 		<property name="username" value="root"></property> -->
+<!-- 		<property name="password" value="1234"></property> -->
+<!-- 	</bean>	 -->
+	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mysql://127.0.0.1:3306/daobs"></property> <!-- Mysql 관련 주소 -->
-		<property name="username" value="root"></property>
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/wlssts"></property>
+		<property name="username" value="wlssts"></property>
 		<property name="password" value="1234"></property>
 	</bean>	
 		

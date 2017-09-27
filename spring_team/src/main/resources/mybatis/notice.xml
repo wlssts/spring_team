@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+
+	<select id="list" resultType="NoticeDTO" parameterType="Map">
+		select noticeno, title, content, wdate, viewcnt from notice
+		<where>
+			<choose>
+				<when test="col=='title'">
+					title like '%'||#{word}||'%'
+				</when>
+				<when test="col=='content'">
+					content like '%'||#{word}||'%'
+				</when>
+			</choose>
+		</where>
+		order by noticeno desc limit #{sno},#{eno}
+	</select>
+
+	<select id="total" resultType="int" parameterType="Map">
+		select count(*) from notice
+		<where>
+			<choose>
+				<when test="col=='title'">
+					title like '%'||#{word}||'%'
+				</when>
+				<when test="col=='content'">
+					content like '%'||#{word}||'%'
+				</when>
+			</choose>
+		</where>
+	</select>
+
+	<insert id="create" parameterType="NoticeDTO">
+		INSERT INTO notice
+		(title,content,wdate,grade)
+		VALUES(#{title},#{content},#{sysdate()},#{grade})
+	</insert>
+
+	<select id="read" resultType="NoticeDTO" parameterType="int">
+		select
+		noticeno, title, content, wdate, viewcnt
+		from notice where noticeno = #{noticeno}
+	</select>
+
+	<update id="upViewcnt" parameterType="int">
+		update notice set viewcnt =
+		viewcnt + 1 where noticeno = #{noticeno}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from notice where
+		noticeno = #{noticeno}
+	</delete>
+
+	<update id="update" parameterType="NoticeDTO">
+		UPDATE notice SET
+		title = #{title},
+		content = #{content},
+		grade = #{grade}
+		WHERE noticeno = #{noticeno};
+	</update>
+</mapper>
